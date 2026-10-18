@@ -37,7 +37,7 @@
 </head>
 <body class="bg-brand-dark text-gray-100 min-h-screen flex flex-col">
 
-    <!-- Header / Fecha dinámica en español -->
+    <!-- Header / Fecha dinámica -->
     <header class="bg-brand-card border-b border-brand-border p-4 sticky top-0 z-50">
         <div class="max-w-md mx-auto flex justify-between items-center">
             <div>
@@ -59,17 +59,17 @@
                 <h2 class="text-sm font-bold text-brand-green mb-2"><i class="fa-solid fa-book-open mr-2"></i>Diario Personal & Reflexión</h2>
                 <textarea id="journal-input" rows="6" class="w-full bg-brand-dark border border-brand-border rounded-xl p-3 text-sm text-gray-200 focus:outline-none focus:border-brand-green transition" placeholder="Escribe tus notas, pensamientos o progreso de hoy..."></textarea>
                 <button onclick="guardarDiario()" class="mt-3 w-full bg-brand-green text-brand-dark font-bold py-2.5 rounded-xl text-sm transition hover:opacity-90 neon-glow-green">
-                    Guardar en LocalStorage
+                    Guardar Diario
                 </button>
             </div>
         </section>
 
-        <!-- TAB 2: RUTINA Y HORARIO -->
+        <!-- TAB 2: RUTINA Y HORARIO MAESTRO -->
         <section id="tab-rutina" class="space-y-4 hidden">
             <div class="bg-brand-card border border-brand-border rounded-2xl p-4 neon-glow-cyan">
                 <h2 class="text-sm font-bold text-brand-cyan mb-3"><i class="fa-solid fa-calendar-days mr-2"></i>Rutina Diaria Maestra</h2>
                 <div id="lista-horarios" class="space-y-2 text-xs">
-                    <!-- Contenido dinámico según el día -->
+                    <!-- Generado dinámicamente según el día de la semana -->
                 </div>
             </div>
         </section>
@@ -78,10 +78,10 @@
         <section id="tab-alarmas" class="space-y-4 hidden">
             <div class="bg-brand-card border border-brand-border rounded-2xl p-4 neon-glow-green text-center space-y-4">
                 <h2 class="text-sm font-bold text-brand-green"><i class="fa-solid fa-bell mr-2"></i>Sistema Háptico & Alertas</h2>
-                <p class="text-xs text-gray-400">Activa las notificaciones para recibir las alertas automáticas con el nombre de cada actividad en tu iPhone y Apple Watch.</p>
+                <p class="text-xs text-gray-400">Activa las notificaciones para recibir las alertas automáticas con el título personalizado de cada actividad en tu iPhone y Apple Watch.</p>
                 
                 <button onclick="activarYProbarAlarma()" class="w-full bg-brand-cyan text-brand-dark font-bold py-3 rounded-xl text-sm transition hover:opacity-90 neon-glow-cyan">
-                    ⚡ ACTIVAR Y PROBAR ALARMA AHORA
+                    ⚡ ACTIVAR Y PROBAR ALARMA (5s)
                 </button>
 
                 <div id="cuenta-atras" class="text-xs font-mono text-brand-cyan hidden">
@@ -93,7 +93,7 @@
 
     </main>
 
-    <!-- Barra de Navegación Inferior -->
+    <!-- Navegación Inferior -->
     <nav class="fixed bottom-0 left-0 right-0 bg-brand-card border-t border-brand-border p-2">
         <div class="max-w-md mx-auto flex justify-around">
             <button onclick="cambiarTab('diario')" id="btn-diario" class="flex flex-col items-center text-brand-green p-2 text-xs">
@@ -113,7 +113,7 @@
 
     <!-- Lógica de JavaScript -->
     <script>
-        // Registrar Service Worker para soporte completo de notificaciones en iOS / Apple Watch
+        // Registrar Service Worker para notificaciones con títulos en iOS / Apple Watch
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/sw.js');
         }
@@ -130,7 +130,7 @@
         function guardarDiario() {
             const texto = document.getElementById('journal-input').value;
             localStorage.setItem('cyber_fitness_journal', texto);
-            alert('¡Entrada guardada en el dispositivo!');
+            alert('¡Entrada guardada con éxito!');
         }
 
         window.onload = function() {
@@ -142,7 +142,7 @@
             iniciarComprobadorAlertas();
         };
 
-        // 3. Sistema de Pestañas
+        // 3. Navegación por Pestañas
         function cambiarTab(tab) {
             document.getElementById('tab-diario').classList.add('hidden');
             document.getElementById('tab-rutina').classList.add('hidden');
@@ -156,7 +156,7 @@
             document.getElementById(`btn-${tab}`).className = "flex flex-col items-center text-brand-green p-2 text-xs";
         }
 
-        // 4. Lógica de Rutina Diaria
+        // 4. Lógica de Rutina por Día
         function obtenerRutinaHoy() {
             const diaSemana = new Date().getDay(); // 0: Dom, 1: Lun, 2: Mar, 3: Mié, 4: Jue, 5: Vie, 6: Sáb
             let rutina = [
@@ -192,8 +192,8 @@
             `).join('');
         }
 
-        // 5. Enviar Notificación Personalizada a través del Service Worker (Compatibilidad iOS)
-        async function enviarNotificacion(titulo, mensaje) {
+        // 5. Enviar Notificación Personalizada vía Service Worker
+        async function lanzarAlarmaPersonalizada(titulo, mensaje) {
             if ("vibrate" in navigator) {
                 navigator.vibrate([300, 100, 300, 100, 500]);
             }
@@ -214,7 +214,7 @@
             }
         }
 
-        // 6. Prueba Instantánea
+        // 6. Botón de prueba instantánea (5 segundos)
         function activarYProbarAlarma() {
             if (!("Notification" in window)) {
                 alert("Tu navegador no admite notificaciones.");
@@ -235,7 +235,7 @@
                         if (seg <= 0) {
                             clearInterval(intervalo);
                             elemCuenta.textContent = "🚀 ¡Alerta enviada a la pantalla de bloqueo y reloj!";
-                            enviarNotificacion("🏋️ Gym Prep (15:30)", "¡Es hora de preparar la mochila e ir a entrenar!");
+                            lanzarAlarmaPersonalizada("🏋️ Gym Prep (15:30)", "¡Es hora de preparar la mochila e ir a entrenar!");
                         }
                     }, 1000);
                 } else {
@@ -244,7 +244,7 @@
             });
         }
 
-        // 7. Verificación Automática cada minuto para disparar la alarma en vivo
+        // 7. Verificación Automática del reloj del sistema para lanzar alarmas reales
         function iniciarComprobadorAlertas() {
             setInterval(() => {
                 const ahora = new Date();
@@ -253,7 +253,7 @@
                 
                 rutina.forEach(item => {
                     if (item.hora === horaActual && ahora.getSeconds() < 10) {
-                        enviarNotificacion(item.titulo, item.desc);
+                        lanzarAlarmaPersonalizada(item.titulo, item.desc);
                     }
                 });
             }, 10000); // Comprueba cada 10 segundos
