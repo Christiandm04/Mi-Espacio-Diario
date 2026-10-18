@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prueba de Alarma - Cyber Fitness</title>
+    <title>Mi Espacio Diario - Cyber Fitness</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -11,73 +12,218 @@
             theme: {
                 extend: {
                     colors: {
-                        brand: { green: '#00ff88', cyan: '#00e5ff', dark: '#0d1117', card: '#161b22', border: '#30363d' }
+                        brand: {
+                            green: '#00ff88',
+                            cyan: '#00e5ff',
+                            dark: '#0d1117',
+                            card: '#161b22',
+                            border: '#30363d'
+                        }
                     }
                 }
             }
         }
     </script>
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap" rel="stylesheet">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .neon-glow-green { box-shadow: 0 0 15px rgba(0, 255, 136, 0.3); }
+        .neon-glow-cyan { box-shadow: 0 0 15px rgba(0, 229, 255, 0.3); }
+        .neon-text-green { text-shadow: 0 0 10px rgba(0, 255, 136, 0.5); }
+    </style>
 </head>
-<body class="bg-brand-dark text-gray-100 min-h-screen flex flex-col justify-center items-center p-4 font-sans">
+<body class="bg-brand-dark text-gray-100 min-h-screen flex flex-col">
 
-    <div class="max-w-sm w-full bg-brand-card border border-brand-border rounded-2xl p-6 text-center space-y-4 shadow-2xl">
-        <div class="text-brand-green text-4xl mb-2">
-            <i class="fa-solid fa-bell-ring animate-bounce"></i>
+    <!-- Header / Fecha dinámica en español -->
+    <header class="bg-brand-card border-b border-brand-border p-4 sticky top-0 z-50">
+        <div class="max-w-md mx-auto flex justify-between items-center">
+            <div>
+                <h1 class="text-xl font-extrabold tracking-wider text-brand-green neon-text-green">CYBER FITNESS</h1>
+                <p id="fecha-actual" class="text-xs text-brand-cyan capitalize">Cargando fecha...</p>
+            </div>
+            <div class="bg-brand-dark border border-brand-border px-3 py-1 rounded-full text-xs text-brand-green font-mono">
+                <i class="fa-solid fa-signal mr-1"></i> ONLINE
+            </div>
         </div>
-        <h1 class="text-xl font-extrabold text-brand-green tracking-wide">PRUEBA DE ALARMA iOS</h1>
-        <p class="text-xs text-gray-300 leading-relaxed">
-            Pulsa el botón, concédele permiso y **bloquea la pantalla**. En <b>5 segundos</b> recibirás la alerta personalizada.
-        </p>
+    </header>
 
-        <button onclick="iniciarPrueba()" class="w-full bg-brand-green text-brand-dark font-extrabold py-3 rounded-xl text-sm transition hover:opacity-90 shadow-lg">
-            ⚡ ACTIVAR Y PROBAR AHORA
-        </button>
+    <!-- Contenido Principal -->
+    <main class="max-w-md mx-auto w-full p-4 flex-grow pb-24">
 
-        <div id="cuenta-atras" class="text-xs font-mono text-brand-cyan hidden">
-            Lanzando alarma en <span id="segundos">5</span> segundos...
+        <!-- TAB 1: DIARIO -->
+        <section id="tab-diario" class="space-y-4">
+            <div class="bg-brand-card border border-brand-border rounded-2xl p-4 neon-glow-green">
+                <h2 class="text-sm font-bold text-brand-green mb-2"><i class="fa-solid fa-book-open mr-2"></i>Diario Personal & Reflexión</h2>
+                <textarea id="journal-input" rows="6" class="w-full bg-brand-dark border border-brand-border rounded-xl p-3 text-sm text-gray-200 focus:outline-none focus:border-brand-green transition" placeholder="Escribe tus notas, pensamientos o progreso de hoy..."></textarea>
+                <button onclick="guardarDiario()" class="mt-3 w-full bg-brand-green text-brand-dark font-bold py-2.5 rounded-xl text-sm transition hover:opacity-90 neon-glow-green">
+                    Guardar en LocalStorage
+                </button>
+            </div>
+        </section>
+
+        <!-- TAB 2: RUTINA Y HORARIO -->
+        <section id="tab-rutina" class="space-y-4 hidden">
+            <div class="bg-brand-card border border-brand-border rounded-2xl p-4 neon-glow-cyan">
+                <h2 class="text-sm font-bold text-brand-cyan mb-3"><i class="fa-solid fa-calendar-days mr-2"></i>Rutina Diaria Maestra</h2>
+                <div id="lista-horarios" class="space-y-2 text-xs">
+                    <!-- Contenido dinámico según el día -->
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: ALARMAS Y PRUEBAS -->
+        <section id="tab-alarmas" class="space-y-4 hidden">
+            <div class="bg-brand-card border border-brand-border rounded-2xl p-4 neon-glow-green text-center space-y-4">
+                <h2 class="text-sm font-bold text-brand-green"><i class="fa-solid fa-bell mr-2"></i>Sistema Háptico & Alertas</h2>
+                <p class="text-xs text-gray-400">Activa las notificaciones para recibir las alertas automáticas con el nombre de cada actividad en tu iPhone y Apple Watch.</p>
+                
+                <button onclick="activarYProbarAlarma()" class="w-full bg-brand-cyan text-brand-dark font-bold py-3 rounded-xl text-sm transition hover:opacity-90 neon-glow-cyan">
+                    ⚡ ACTIVAR Y PROBAR ALARMA AHORA
+                </button>
+
+                <div id="cuenta-atras" class="text-xs font-mono text-brand-cyan hidden">
+                    Lanzando alerta de prueba en <span id="segundos">5</span>s...
+                </div>
+                <div id="estado-alarma" class="text-xs text-brand-green font-mono"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Barra de Navegación Inferior -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-brand-card border-t border-brand-border p-2">
+        <div class="max-w-md mx-auto flex justify-around">
+            <button onclick="cambiarTab('diario')" id="btn-diario" class="flex flex-col items-center text-brand-green p-2 text-xs">
+                <i class="fa-solid fa-pen-nib text-lg"></i>
+                <span>Diario</span>
+            </button>
+            <button onclick="cambiarTab('rutina')" id="btn-rutina" class="flex flex-col items-center text-gray-400 p-2 text-xs">
+                <i class="fa-solid fa-dumbbell text-lg"></i>
+                <span>Rutina</span>
+            </button>
+            <button onclick="cambiarTab('alarmas')" id="btn-alarmas" class="flex flex-col items-center text-gray-400 p-2 text-xs">
+                <i class="fa-solid fa-clock text-lg"></i>
+                <span>Alarmas</span>
+            </button>
         </div>
-    </div>
+    </nav>
 
+    <!-- Lógica de JavaScript -->
     <script>
-        // Registrar Service Worker dinámico en línea para soporte completo en iOS
+        // Registrar Service Worker para soporte completo de notificaciones en iOS / Apple Watch
         if ('serviceWorker' in navigator) {
-            const swCode = `
-                self.addEventListener('install', event => self.skipWaiting());
-                self.addEventListener('activate', event => event.waitUntil(self.clients.claim()));
-            `;
-            const blob = new Blob([swCode], { type: 'application/javascript' });
-            navigator.serviceWorker.register(URL.createObjectURL(blob));
+            navigator.serviceWorker.register('/sw.js');
         }
 
-        async function lanzarAlarmaConServiceWorker(titulo, mensaje) {
+        // 1. Fecha Actual en Español
+        function actualizarFecha() {
+            const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const fechaStr = new Date().toLocaleDateString('es-ES', opciones);
+            document.getElementById('fecha-actual').textContent = fechaStr;
+        }
+        actualizarFecha();
+
+        // 2. Persistencia del Diario (localStorage)
+        function guardarDiario() {
+            const texto = document.getElementById('journal-input').value;
+            localStorage.setItem('cyber_fitness_journal', texto);
+            alert('¡Entrada guardada en el dispositivo!');
+        }
+
+        window.onload = function() {
+            const guardado = localStorage.getItem('cyber_fitness_journal');
+            if (guardado) {
+                document.getElementById('journal-input').value = guardado;
+            }
+            renderizarHorario();
+            iniciarComprobadorAlertas();
+        };
+
+        // 3. Sistema de Pestañas
+        function cambiarTab(tab) {
+            document.getElementById('tab-diario').classList.add('hidden');
+            document.getElementById('tab-rutina').classList.add('hidden');
+            document.getElementById('tab-alarmas').classList.add('hidden');
+
+            document.getElementById('btn-diario').className = "flex flex-col items-center text-gray-400 p-2 text-xs";
+            document.getElementById('btn-rutina').className = "flex flex-col items-center text-gray-400 p-2 text-xs";
+            document.getElementById('btn-alarmas').className = "flex flex-col items-center text-gray-400 p-2 text-xs";
+
+            document.getElementById(`tab-${tab}`).classList.remove('hidden');
+            document.getElementById(`btn-${tab}`).className = "flex flex-col items-center text-brand-green p-2 text-xs";
+        }
+
+        // 4. Lógica de Rutina Diaria
+        function obtenerRutinaHoy() {
+            const diaSemana = new Date().getDay(); // 0: Dom, 1: Lun, 2: Mar, 3: Mié, 4: Jue, 5: Vie, 6: Sáb
+            let rutina = [
+                { hora: "07:00", titulo: "⏰ Despertar & Activación", desc: "¡Buenos días! Es hora de iniciar la jornada." },
+                { hora: "08:15", titulo: "🎓 Salida a Clase", desc: "Momento de salir a las clases del ciclo." }
+            ];
+
+            if (diaSemana === 0 || diaSemana === 6) {
+                rutina.push({ hora: "10:00", titulo: "🏋️ Bloque de Gym (Fin de semana)", desc: "Entrenamiento del fin de semana (10:00 - 12:00)." });
+            } else if (diaSemana === 2) {
+                rutina.push({ hora: "16:00", titulo: "🏋️ Gym (Turno Martes)", desc: "Entrenamiento desplazado de los martes (16:00 - 17:30)." });
+                rutina.push({ hora: "18:15", titulo: "📚 Bloque de Estudio", desc: "Concentración y repaso de contenidos." });
+            } else if (diaSemana === 3) {
+                rutina.push({ hora: "15:30", titulo: "🏋️ Gym Prep", desc: "Prepara la bolsa para ir a entrenar." });
+                rutina.push({ hora: "18:30", titulo: "🌿 Ocio & Meditación", desc: "Paseo, relajación o gaming (sin bloque de estudio)." });
+            } else {
+                rutina.push({ hora: "15:30", titulo: "🏋️ Gym Prep", desc: "Prepara la bolsa para ir a entrenar." });
+                rutina.push({ hora: "18:15", titulo: "📚 Bloque de Estudio", desc: "Concentración y estudio diario." });
+            }
+
+            rutina.push({ hora: "22:00", titulo: "🌙 Hora de Dormir", desc: "Desconexión para asegurar 8 horas de descanso." });
+            return rutina;
+        }
+
+        function renderizarHorario() {
+            const contenedor = document.getElementById('lista-horarios');
+            const rutina = obtenerRutinaHoy();
+            contenedor.innerHTML = rutina.map(item => `
+                <div class="flex justify-between items-center bg-brand-dark p-2.5 rounded-xl border border-brand-border">
+                    <span class="font-mono text-brand-green font-bold">${item.hora}</span>
+                    <span class="text-gray-300 text-right">${item.titulo}</span>
+                </div>
+            `).join('');
+        }
+
+        // 5. Enviar Notificación Personalizada a través del Service Worker (Compatibilidad iOS)
+        async function enviarNotificacion(titulo, mensaje) {
             if ("vibrate" in navigator) {
                 navigator.vibrate([300, 100, 300, 100, 500]);
             }
 
             if ('serviceWorker' in navigator) {
                 const reg = await navigator.serviceWorker.ready;
-                reg.showNotification(titulo, {
-                    body: mensaje,
-                    icon: 'https://cdn-icons-png.flaticon.com/512/3603/3603850.png',
-                    badge: 'https://cdn-icons-png.flaticon.com/512/3603/3603850.png',
-                    vibrate: [300, 100, 300, 100, 500],
-                    tag: 'alarma-prueba'
-                });
+                if (reg.active) {
+                    reg.active.postMessage({
+                        type: 'NOTIFICACION_PERSONALIZADA',
+                        titulo: titulo,
+                        mensaje: mensaje
+                    });
+                } else {
+                    reg.showNotification(titulo, { body: mensaje });
+                }
             } else if (Notification.permission === "granted") {
                 new Notification(titulo, { body: mensaje });
             }
         }
 
-        function iniciarPrueba() {
+        // 6. Prueba Instantánea
+        function activarYProbarAlarma() {
             if (!("Notification" in window)) {
-                alert("Tu navegador no soporta notificaciones.");
+                alert("Tu navegador no admite notificaciones.");
                 return;
             }
 
             Notification.requestPermission().then(permission => {
                 if (permission === "granted") {
+                    document.getElementById('estado-alarma').textContent = " Permisos concedidos correctamente.";
                     const elemCuenta = document.getElementById('cuenta-atras');
                     const elemSeg = document.getElementById('segundos');
                     elemCuenta.classList.remove('hidden');
@@ -88,19 +234,29 @@
                         elemSeg.textContent = seg;
                         if (seg <= 0) {
                             clearInterval(intervalo);
-                            elemCuenta.textContent = "🚀 ¡Notificación enviada!";
-                            
-                            // TÍTULO Y TEXTO PERSONALIZADO DE LA ALARMA
-                            lanzarAlarmaConServiceWorker(
-                                "🏋️ Gym Prep (15:30)", 
-                                "¡Es hora de preparar la bolsa e ir al gimnasio!"
-                            );
+                            elemCuenta.textContent = "🚀 ¡Alerta enviada a la pantalla de bloqueo y reloj!";
+                            enviarNotificacion("🏋️ Gym Prep (15:30)", "¡Es hora de preparar la mochila e ir a entrenar!");
                         }
                     }, 1000);
                 } else {
-                    alert("Necesitas aceptar los permisos para recibir la alerta.");
+                    alert("Se requieren permisos de notificación para enviar las alertas.");
                 }
             });
+        }
+
+        // 7. Verificación Automática cada minuto para disparar la alarma en vivo
+        function iniciarComprobadorAlertas() {
+            setInterval(() => {
+                const ahora = new Date();
+                const horaActual = `${String(ahora.getHours()).padStart(2, '0')}:${String(ahora.getMinutes()).padStart(2, '0')}`;
+                const rutina = obtenerRutinaHoy();
+                
+                rutina.forEach(item => {
+                    if (item.hora === horaActual && ahora.getSeconds() < 10) {
+                        enviarNotificacion(item.titulo, item.desc);
+                    }
+                });
+            }, 10000); // Comprueba cada 10 segundos
         }
     </script>
 </body>
