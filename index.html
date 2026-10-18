@@ -3,8 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Espacio Diario - Cyber Fitness</title>
-    <!-- Tailwind CSS CDN -->
+    <title>Plan Maestro Pro - Cyber Fitness</title>
+    
+    <!-- PWA Configs -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Plan Maestro">
+
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -15,194 +22,354 @@
                         brand: {
                             green: '#00ff88',
                             cyan: '#00e5ff',
-                            dark: '#0d1117',
-                            card: '#161b22',
-                            border: '#30363d'
+                            dark: '#0a0e14',
+                            card: '#121821',
+                            border: '#21262d',
+                            hover: '#1f2937'
                         }
                     }
                 }
             }
         }
     </script>
-    <!-- FontAwesome Icons -->
+    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
-        .neon-glow-green { box-shadow: 0 0 15px rgba(0, 255, 136, 0.3); }
-        .neon-glow-cyan { box-shadow: 0 0 15px rgba(0, 229, 255, 0.3); }
-        .neon-text-green { text-shadow: 0 0 10px rgba(0, 255, 136, 0.5); }
+        .neon-glow-green { box-shadow: 0 0 15px rgba(0, 255, 136, 0.15); }
+        .neon-glow-cyan { box-shadow: 0 0 15px rgba(0, 229, 255, 0.15); }
     </style>
 </head>
-<body class="bg-brand-dark text-gray-100 min-h-screen flex flex-col">
+<body class="bg-brand-dark text-gray-100 min-h-screen flex flex-col selection:bg-brand-green selection:text-brand-dark">
 
-    <!-- Header / Spanish Date Auto-updating -->
-    <header class="bg-brand-card border-b border-brand-border p-4 sticky top-0 z-50">
-        <div class="max-w-md mx-auto flex justify-between items-center">
-            <div>
-                <h1 class="text-xl font-extrabold tracking-wider text-brand-green neon-text-green">CYBER FITNESS</h1>
-                <p id="fecha-actual" class="text-xs text-brand-cyan capitalize">Cargando fecha...</p>
+    <!-- TOP BAR SUPERIOR -->
+    <header class="bg-brand-card border-b border-brand-border px-6 py-3 sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-3">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-brand-green/10 border border-brand-green/30 flex items-center justify-center text-brand-green">
+                    <i class="fa-solid fa-bolt text-sm"></i>
+                </div>
+                <div>
+                    <h1 class="text-sm font-extrabold tracking-wider text-brand-green">Plan Maestro Pro</h1>
+                    <p class="text-[11px] text-gray-400">Objetivo: Salud, Hábitos & Fuerza Base (1,55m / 50kg)</p>
+                </div>
             </div>
-            <div class="bg-brand-dark border border-brand-border px-3 py-1 rounded-full text-xs text-brand-green font-mono">
-                <i class="fa-solid fa-signal mr-1"></i> ONLINE
+            
+            <div class="flex items-center gap-4">
+                <div class="bg-brand-dark border border-brand-border px-4 py-1.5 rounded-xl text-xs font-mono text-brand-cyan flex items-center gap-2">
+                    <span id="reloj-digital" class="font-bold">12:41:09</span>
+                    <span class="text-[10px] text-gray-400 border-l border-brand-border pl-2" id="fecha-corta">Domingo, 18 De Octubre De 2026</span>
+                </div>
+                <button onclick="activarYProbarAlarma()" class="bg-brand-green/10 border border-brand-green/30 text-brand-green px-3 py-1.5 rounded-xl text-xs font-bold hover:bg-brand-green/20 transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-bell text-[10px]"></i> Alarmas Sync
+                </button>
             </div>
         </div>
     </header>
 
-    <!-- Main Container -->
-    <main class="max-w-md mx-auto w-full p-4 flex-grow pb-24">
+    <!-- NAVEGACIÓN DE PESTAÑAS -->
+    <nav class="bg-brand-card/60 border-b border-brand-border px-6 py-2.5 backdrop-blur-md">
+        <div class="max-w-6xl mx-auto flex flex-wrap gap-2 text-xs font-semibold">
+            <button onclick="cambiarTab('rutina')" id="tab-btn-rutina" class="px-4 py-2 rounded-xl bg-brand-green text-brand-dark font-bold transition flex items-center gap-2">
+                <i class="fa-solid fa-calendar-week"></i> Rutina Semanal
+            </button>
+            <button onclick="cambiarTab('diario')" id="tab-btn-diario" class="px-4 py-2 rounded-xl text-gray-400 hover:text-white hover:bg-brand-border transition flex items-center gap-2">
+                <i class="fa-solid fa-book-open"></i> Diario Personal
+            </button>
+            <button onclick="cambiarTab('habitos')" id="tab-btn-habitos" class="px-4 py-2 rounded-xl text-gray-400 hover:text-white hover:bg-brand-border transition flex items-center gap-2">
+                <i class="fa-solid fa-droplet"></i> Hábitos & Agua
+            </button>
+            <button onclick="cambiarTab('gym')" id="tab-btn-gym" class="px-4 py-2 rounded-xl text-gray-400 hover:text-white hover:bg-brand-border transition flex items-center gap-2">
+                <i class="fa-solid fa-dumbbell"></i> Guía de Gym
+            </button>
+            <button onclick="cambiarTab('alarmas')" id="tab-btn-alarmas" class="px-4 py-2 rounded-xl text-gray-400 hover:text-white hover:bg-brand-border transition flex items-center gap-2">
+                <i class="fa-solid fa-clock"></i> Notificaciones & Alarmas
+            </button>
+        </div>
+    </nav>
 
-        <!-- TAB 1: DIARIO -->
-        <section id="tab-diario" class="space-y-4">
-            <div class="bg-brand-card border border-brand-border rounded-2xl p-4 neon-glow-green">
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="max-w-6xl mx-auto w-full p-6 flex-grow">
+
+        <!-- VISTA 1: RUTINA SEMANAL -->
+        <section id="vista-rutina" class="space-y-6">
+            <div>
+                <h2 class="text-lg font-bold tracking-tight text-white mb-1">Planificación Semanal Interactiva</h2>
+                <p class="text-xs text-gray-400">Selecciona el día para revisar tu cronograma específico de Torrelavega/Santander.</p>
+            </div>
+
+            <!-- Selector de Días -->
+            <div class="flex gap-2 overflow-x-auto pb-2">
+                <button onclick="seleccionarDia(1)" id="btn-dia-1" class="px-4 py-2 rounded-xl text-xs font-bold transition border border-brand-border bg-brand-border text-white">LUN</button>
+                <button onclick="seleccionarDia(2)" id="btn-dia-2" class="px-4 py-2 rounded-xl text-xs font-bold transition border border-brand-border bg-brand-card text-gray-400 hover:text-white">MAR</button>
+                <button onclick="seleccionarDia(3)" id="btn-dia-3" class="px-4 py-2 rounded-xl text-xs font-bold transition border border-brand-border bg-brand-card text-gray-400 hover:text-white">MIÉ</button>
+                <button onclick="seleccionarDia(4)" id="btn-dia-4" class="px-4 py-2 rounded-xl text-xs font-bold transition border border-brand-border bg-brand-card text-gray-400 hover:text-white">JUE</button>
+                <button onclick="seleccionarDia(5)" id="btn-dia-5" class="px-4 py-2 rounded-xl text-xs font-bold transition border border-brand-border bg-brand-card text-gray-400 hover:text-white">VIE</button>
+                <button onclick="seleccionarDia(6)" id="btn-dia-6" class="px-4 py-2 rounded-xl text-xs font-bold transition border border-brand-border bg-brand-card text-gray-400 hover:text-white">SÁB</button>
+                <button onclick="seleccionarDia(0)" id="btn-dia-0" class="px-4 py-2 rounded-xl text-xs font-bold transition border border-brand-border bg-brand-card text-gray-400 hover:text-white">DOM</button>
+            </div>
+
+            <!-- Panel de Bloques del Día -->
+            <div class="bg-brand-card border border-brand-border rounded-2xl p-6 neon-glow-cyan">
+                <div class="flex justify-between items-center mb-6 pb-4 border-b border-brand-border">
+                    <h3 id="titulo-dia-activo" class="text-sm font-extrabold text-brand-cyan tracking-wide uppercase">LUNES — Día de Brazo & Enfoque</h3>
+                    <div class="text-xs text-gray-400 bg-brand-dark px-3 py-1 rounded-lg border border-brand-border">
+                        <i class="fa-regular fa-clock mr-1"></i> Horario de 24 horas
+                    </div>
+                </div>
+
+                <div id="contenedor-bloques" class="space-y-3">
+                    <!-- Inyectado dinámicamente -->
+                </div>
+            </div>
+        </section>
+
+        <!-- VISTA 2: DIARIO PERSONAL -->
+        <section id="vista-diario" class="space-y-4 hidden">
+            <div class="bg-brand-card border border-brand-border rounded-2xl p-6 neon-glow-green max-w-2xl mx-auto">
                 <h2 class="text-sm font-bold text-brand-green mb-2"><i class="fa-solid fa-book-open mr-2"></i>Diario Personal & Reflexión</h2>
-                <textarea id="journal-input" rows="6" class="w-full bg-brand-dark border border-brand-border rounded-xl p-3 text-sm text-gray-200 focus:outline-none focus:border-brand-green transition" placeholder="Escribe tus notas, pensamientos o progreso de hoy..."></textarea>
-                <button onclick="guardarDiario()" class="mt-3 w-full bg-brand-green text-brand-dark font-bold py-2.5 rounded-xl text-sm transition hover:opacity-90 neon-glow-green">
+                <p class="text-xs text-gray-400 mb-4">Escribe tus notas, estado de ánimo o progresos de hoy. Se guarda automáticamente en tu dispositivo.</p>
+                <textarea id="journal-input" rows="8" class="w-full bg-brand-dark border border-brand-border rounded-xl p-4 text-sm text-gray-200 focus:outline-none focus:border-brand-green transition" placeholder="Escribe aquí tus pensamientos..."></textarea>
+                <button onclick="guardarDiario()" class="mt-4 w-full bg-brand-green text-brand-dark font-bold py-3 rounded-xl text-sm transition hover:opacity-90 neon-glow-green">
                     Guardar en LocalStorage
                 </button>
             </div>
         </section>
 
-        <!-- TAB 2: RUTINA Y HORARIO -->
-        <section id="tab-rutina" class="space-y-4 hidden">
-            <div class="bg-brand-card border border-brand-border rounded-2xl p-4 neon-glow-cyan">
-                <h2 class="text-sm font-bold text-brand-cyan mb-3"><i class="fa-solid fa-calendar-days mr-2"></i>Rutina Diaria Maestra</h2>
-                <div id="lista-horarios" class="space-y-2 text-xs">
-                    <!-- Dinámico según el día -->
+        <!-- VISTA 3: HÁBITOS & AGUA -->
+        <section id="vista-habitos" class="space-y-4 hidden">
+            <div class="bg-brand-card border border-brand-border rounded-2xl p-6 max-w-2xl mx-auto text-center space-y-4">
+                <h2 class="text-sm font-bold text-brand-cyan"><i class="fa-solid fa-droplet mr-2"></i>Control de Hidratación & Hábitos</h2>
+                <p class="text-xs text-gray-400">Meta diaria: 2.5 Litros de Agua</p>
+                <div class="text-4xl font-mono font-extrabold text-brand-green" id="contador-agua">1.5 L</div>
+                <div class="flex justify-center gap-3">
+                    <button onclick="sumarAgua(0.25)" class="bg-brand-border px-4 py-2 rounded-xl text-xs font-bold hover:bg-brand-hover transition">+ 250 ml</button>
+                    <button onclick="sumarAgua(0.5)" class="bg-brand-border px-4 py-2 rounded-xl text-xs font-bold hover:bg-brand-hover transition">+ 500 ml</button>
+                    <button onclick="resetAgua()" class="bg-red-500/10 text-red-400 border border-red-500/30 px-4 py-2 rounded-xl text-xs font-bold">Reiniciar</button>
                 </div>
             </div>
         </section>
 
-        <!-- TAB 3: ALARMAS Y HÁPTICOS -->
-        <section id="tab-alarmas" class="space-y-4 hidden">
-            <div class="bg-brand-card border border-brand-border rounded-2xl p-4 neon-glow-green text-center space-y-4">
-                <h2 class="text-sm font-bold text-brand-green"><i class="fa-solid fa-bell mr-2"></i>Sistema Háptico & Alertas</h2>
-                <p class="text-xs text-gray-400">Conecta las notificaciones para recibir avisos directos en tu iPhone y tu Apple Watch con vibración háptica personalizada.</p>
-                <button onclick="activarAlarmas()" class="w-full bg-brand-cyan text-brand-dark font-bold py-3 rounded-xl text-sm transition hover:opacity-90 neon-glow-cyan">
-                    Activar Notificaciones y Probar Vibración
+        <!-- VISTA 4: GUÍA DE GYM -->
+        <section id="vista-gym" class="space-y-4 hidden">
+            <div class="bg-brand-card border border-brand-border rounded-2xl p-6 max-w-2xl mx-auto space-y-3">
+                <h2 class="text-sm font-bold text-brand-green"><i class="fa-solid fa-dumbbell mr-2"></i>Guía de Entrenamiento & Base</h2>
+                <div class="bg-brand-dark p-4 rounded-xl border border-brand-border text-xs space-y-2">
+                    <p class="font-bold text-white">🏋️ Enfoque Corporal (1,55m / 50kg):</p>
+                    <p class="text-gray-300">Prioriza la sobrecarga progresiva en ejercicios compuestos, asegurando un consumo calórico adecuado y descanso óptimo de 8 horas.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- VISTA 5: NOTIFICACIONES & ALARMAS -->
+        <section id="vista-alarmas" class="space-y-4 hidden">
+            <div class="bg-brand-card border border-brand-border rounded-2xl p-6 max-w-2xl mx-auto text-center space-y-4 neon-glow-green">
+                <h2 class="text-sm font-bold text-brand-green"><i class="fa-solid fa-bell mr-2"></i>Sincronización con Apple Watch</h2>
+                <p class="text-xs text-gray-400">Activa las notificaciones para recibir alertas automáticas con el nombre de cada actividad directamente en tu muñeca.</p>
+                
+                <button onclick="activarYProbarAlarma()" class="w-full bg-brand-cyan text-brand-dark font-bold py-3.5 rounded-xl text-sm transition hover:opacity-90 neon-glow-cyan">
+                    ⚡ ACTIVAR Y PROBAR ALARMA (5s)
                 </button>
+
+                <div id="cuenta-atras" class="text-xs font-mono text-brand-cyan hidden">
+                    Lanzando alerta de prueba en <span id="segundos">5</span>s...
+                </div>
                 <div id="estado-alarma" class="text-xs text-brand-green font-mono"></div>
             </div>
         </section>
 
     </main>
 
-    <!-- Navigation Bar -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-brand-card border-t border-brand-border p-2">
-        <div class="max-w-md mx-auto flex justify-around">
-            <button onclick="cambiarTab('diario')" id="btn-diario" class="flex flex-col items-center text-brand-green p-2 text-xs">
-                <i class="fa-solid fa-pen-nib text-lg"></i>
-                <span>Diario</span>
-            </button>
-            <button onclick="cambiarTab('rutina')" id="btn-rutina" class="flex flex-col items-center text-gray-400 p-2 text-xs">
-                <i class="fa-solid fa-dumbbell text-lg"></i>
-                <span>Rutina</span>
-            </button>
-            <button onclick="cambiarTab('alarmas')" id="btn-alarmas" class="flex flex-col items-center text-gray-400 p-2 text-xs">
-                <i class="fa-solid fa-clock text-lg"></i>
-                <span>Alarmas</span>
-            </button>
-        </div>
-    </nav>
+    <!-- FOOTER -->
+    <footer class="border-t border-brand-border py-4 px-6 text-center text-[11px] text-gray-500">
+        Plan Maestro Pro &bull; Desplegado en Netlify &bull; Optimizado para iOS & Apple Watch
+    </footer>
 
-    <!-- JavaScript Logic -->
+    <!-- SCRIPT DE LÓGICA -->
     <script>
-        // 1. Fecha actual en Español auto-actualizable
-        function actualizarFecha() {
+        // Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js');
+        }
+
+        // Reloj en tiempo real
+        setInterval(() => {
+            const now = new Date();
+            document.getElementById('reloj-digital').textContent = now.toTimeString().split(' ')[0];
             const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            const fechaStr = new Date().toLocaleDateString('es-ES', opciones);
-            document.getElementById('fecha-actual').textContent = fechaStr;
-        }
-        actualizarFecha();
+            document.getElementById('fecha-corta').textContent = now.toLocaleDateString('es-ES', opciones);
+        }, 1000);
 
-        // 2. Persistencia del Diario
-        function guardarDiario() {
-            const texto = document.getElementById('journal-input').value;
-            localStorage.setItem('cyber_fitness_journal', texto);
-            alert('¡Entrada de diario guardada con éxito!');
+        // Control de Pestañas
+        function cambiarTab(tab) {
+            const vistas = ['rutina', 'diario', 'habitos', 'gym', 'alarmas'];
+            vistas.forEach(v => {
+                document.getElementById(`vista-${v}`).classList.add('hidden');
+                document.getElementById(`tab-btn-${v}`).className = "px-4 py-2 rounded-xl text-gray-400 hover:text-white hover:bg-brand-border transition flex items-center gap-2";
+            });
+            document.getElementById(`vista-${tab}`).classList.remove('hidden');
+            document.getElementById(`tab-btn-${tab}`).className = "px-4 py-2 rounded-xl bg-brand-green text-brand-dark font-bold transition flex items-center gap-2";
         }
 
-        window.onload = function() {
-            const guardado = localStorage.getItem('cyber_fitness_journal');
-            if (guardado) {
-                document.getElementById('journal-input').value = guardado;
-            }
-            renderizarHorario();
+        // Datos de Rutinas por Día de la Semana
+        const rutinasSemanales = {
+            1: { nombre: "LUNES — Día de Brazo & Enfoque", bloques: [
+                { hora: "07:00", titulo: "⏰ Despertar & Rutina Mañana (Alarma)", desc: "Afirmaciones, diario personal y desayuno limpio." },
+                { hora: "07:30 - 08:15", titulo: "🍳 Desayuno & Preparación", desc: "Desayuno limpio e hidratación." },
+                { hora: "08:15", titulo: "🎓 Salida para Clase (Alarma)", desc: "Trayecto a las clases de Administrativo en Torrelavega." },
+                { hora: "08:30 - 14:30", titulo: "📚 Clases de Administrativo", desc: "Enfoque en estudio, postura e higiene postural." },
+                { hora: "14:30 - 15:15", titulo: "🚶 Salida & Trayecto a Casa", desc: "15-20 min de trayecto y comida limpia." },
+                { hora: "15:30", titulo: "🏋️ Preparación Gym (Alarma)", desc: "Preparar equipamiento para el entrenamiento." },
+                { hora: "16:00 - 17:30", titulo: "💪 Gimnasio: Brazo & Abdomen", desc: "Fuerza de hombros, bíceps, tríceps y abdominales." },
+                { hora: "17:30 - 17:50", titulo: "🚶 Salida del Gym & Trayecto a Casa", desc: "15-20 minutos de vuelta caminando." },
+                { hora: "17:50 - 18:15", titulo: "🚿 Ducha Reparadora & Cambio", desc: "Higiene y relajación muscular." },
+                { hora: "18:15", titulo: "📚 Bloque de Estudio / Lectura (Alarma 18:15)", desc: "Repaso de clase o lectura de desarrollo personal." },
+                { hora: "19:00 - 19:30", titulo: "🌿 Tiempo de Descanso", desc: "Relajación y desconexión breve." },
+                { hora: "18:30 - 20:00", titulo: "🎮 Caminata / Meditación O Jugar a Videojuegos", desc: "Paseo al aire libre, salud mental o gaming libre." }
+            ]},
+            2: { nombre: "MARTES — Turno de Tarde & Gym", bloques: [
+                { hora: "07:00", titulo: "⏰ Despertar & Activación", desc: "Inicio de jornada." },
+                { hora: "16:00", titulo: "🏋️ Gym (Turno Martes)", desc: "Entrenamiento desplazado (16:00 - 17:30)." },
+                { hora: "18:15", titulo: "📚 Bloque de Estudio", desc: "Concentración y repaso." },
+                { hora: "22:00", titulo: "🌙 Hora de Dormir", desc: "Descanso reparador." }
+            ]},
+            3: { nombre: "MIÉRCOLES — Día de Descanso / Ocio", bloques: [
+                { hora: "07:00", titulo: "⏰ Despertar & Activación", desc: "Inicio de jornada." },
+                { hora: "15:30", titulo: "🏋️ Gym Prep", desc: "Preparar bolsa." },
+                { hora: "18:30", titulo: "🌿 Ocio & Meditación", desc: "Paseo o gaming libre sin estudio." },
+                { hora: "22:00", titulo: "🌙 Hora de Dormir", desc: "Descanso reparador." }
+            ]},
+            4: { nombre: "JUEVES — Rutina Estándar", bloques: [
+                { hora: "07:00", titulo: "⏰ Despertar & Activación", desc: "Inicio de jornada." },
+                { hora: "15:30", titulo: "🏋️ Gym Prep", desc: "Preparar bolsa de entrenamiento." },
+                { hora: "18:15", titulo: "📚 Bloque de Estudio", desc: "Concentración diaria." },
+                { hora: "22:00", titulo: "🌙 Hora de Dormir", desc: "Descanso reparador." }
+            ]},
+            5: { nombre: "VIERNES — Cierre de Semana", bloques: [
+                { hora: "07:00", titulo: "⏰ Despertar & Activación", desc: "Inicio de jornada." },
+                { hora: "15:30", titulo: "🏋️ Gym Prep", desc: "Entrenamiento de cierre de semana." },
+                { hora: "18:15", titulo: "📚 Bloque de Estudio", desc: "Repaso final." },
+                { hora: "22:00", titulo: "🌙 Hora de Dormir", desc: "Descanso reparador." }
+            ]},
+            6: { nombre: "SÁBADO — Fin de Semana & Gym", bloques: [
+                { hora: "09:00", titulo: "⏰ Despertar Flexible", desc: "Descanso y activación matutina." },
+                { hora: "10:00", titulo: "🏋️ Bloque de Gym (Fin de semana)", desc: "Entrenamiento matutino (10:00 - 12:00)." },
+                { hora: "22:00", titulo: "🌙 Hora de Dormir", desc: "Descanso reparador." }
+            ]},
+            0: { nombre: "DOMINGO — Descanso & Preparación", bloques: [
+                { hora: "09:30", titulo: "⏰ Despertar & Reflexión", desc: "Planificación de la nueva semana." },
+                { hora: "10:00", titulo: "🏋️ Bloque de Gym (Fin de semana)", desc: "Entrenamiento matutino." },
+                { hora: "22:00", titulo: "🌙 Hora de Dormir", desc: "Descanso reparador." }
+            ]}
         };
 
-        // 3. Sistema de Pestañas
-        function cambiarTab(tab) {
-            document.getElementById('tab-diario').classList.add('hidden');
-            document.getElementById('tab-rutina').classList.add('hidden');
-            document.getElementById('tab-alarmas').classList.add('hidden');
-
-            document.getElementById('btn-diario').className = "flex flex-col items-center text-gray-400 p-2 text-xs";
-            document.getElementById('btn-rutina').className = "flex flex-col items-center text-gray-400 p-2 text-xs";
-            document.getElementById('btn-alarmas').className = "flex flex-col items-center text-gray-400 p-2 text-xs";
-
-            document.getElementById(`tab-${tab}`).classList.remove('hidden');
-            document.getElementById(`btn-${tab}`).className = "flex flex-col items-center text-brand-green p-2 text-xs";
-        }
-
-        // 4. Renderizado de Horario con Lógica Personalizada
-        function renderizarHorario() {
-            const diaSemana = new Date().getDay(); // 0: Dom, 1: Lun, 2: Mar, 3: Mié, 4: Jue, 5: Vie, 6: Sáb
-            const contenedor = document.getElementById('lista-horarios');
-            
-            let rutinaHoy = [
-                { hora: "07:00", titulo: "⏰ Despertar & Activación" },
-                { hora: "08:15", titulo: "🎓 Clase / Administrativo" }
-            ];
-
-            if (diaSemana === 0 || diaSemana === 6) {
-                // Fin de semana
-                rutinaHoy.push({ hora: "10:00 - 12:00", titulo: "🏋️ Bloque de Gym (Fin de semana)" });
-            } else if (diaSemana === 2) {
-                // Martes (Gym shift)
-                rutinaHoy.push({ hora: "16:00 - 17:30", titulo: "🏋️ Gym (Turno desplazado Martes)" });
-                rutinaHoy.push({ hora: "18:15", titulo: "📚 Bloque de Estudio" });
-            } else if (diaSemana === 3) {
-                // Miércoles (Especial ocio/meditación)
-                rutinaHoy.push({ hora: "15:30", titulo: "🏋️ Gym Prep" });
-                rutinaHoy.push({ hora: "18:30 - 20:00", titulo: "🌿 Paseo / Meditación / Gaming (Sin estudio)" });
-            } else {
-                // Lunes, Jueves, Viernes
-                rutinaHoy.push({ hora: "15:30", titulo: "🏋️ Gym Prep" });
-                rutinaHoy.push({ hora: "18:15", titulo: "📚 Bloque de Estudio" });
+        function seleccionarDia(dia) {
+            for(let i=0; i<=6; i++) {
+                const btn = document.getElementById(`btn-dia-${i}`);
+                if(btn) btn.className = "px-4 py-2 rounded-xl text-xs font-bold transition border border-brand-border bg-brand-card text-gray-400 hover:text-white";
             }
+            const activo = document.getElementById(`btn-dia-${dia}`);
+            if(activo) activo.className = "px-4 py-2 rounded-xl text-xs font-bold transition border border-brand-border bg-brand-border text-white";
 
-            rutinaHoy.push({ hora: "22:00", titulo: "🌙 Hora de Dormir" });
-
-            contenedor.innerHTML = rutinaHoy.map(item => `
-                <div class="flex justify-between items-center bg-brand-dark p-2.5 rounded-xl border border-brand-border">
-                    <span class="font-mono text-brand-green font-bold">${item.hora}</span>
-                    <span class="text-gray-300 text-right">${item.titulo}</span>
+            const data = rutinasSemanales[dia];
+            document.getElementById('titulo-dia-activo').textContent = data.nombre;
+            
+            const contenedor = document.getElementById('contenedor-bloques');
+            contenedor.innerHTML = data.bloques.map(b => `
+                <div class="bg-brand-dark border border-brand-border p-4 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 hover:border-brand-green/50 transition">
+                    <span class="font-mono text-brand-green font-bold text-xs bg-brand-card px-3 py-1.5 rounded-lg border border-brand-border">${b.hora}</span>
+                    <div class="flex-grow sm:ml-4">
+                        <h4 class="text-xs font-bold text-white">${b.titulo}</h4>
+                        <p class="text-[11px] text-gray-400 mt-0.5">${b.desc}</p>
+                    </div>
                 </div>
             `).join('');
         }
 
-        // 5. Notificaciones y Hápticos para iPhone y Apple Watch
-        function activarAlarmas() {
+        // Inicializar Lunes por defecto
+        seleccionarDia(1);
+
+        // Diario LocalStorage
+        function guardarDiario() {
+            const texto = document.getElementById('journal-input').value;
+            localStorage.setItem('cyber_fitness_journal', texto);
+            alert('¡Entrada guardada con éxito en el dispositivo!');
+        }
+
+        window.onload = function() {
+            const guardado = localStorage.getItem('cyber_fitness_journal');
+            if(guardado) document.getElementById('journal-input').value = guardado;
+            iniciarComprobadorAlertas();
+        };
+
+        // Hidratación
+        let aguaActual = 1.5;
+        function sumarAgua(litros) {
+            aguaActual += litros;
+            document.getElementById('contador-agua').textContent = aguaActual.toFixed(2) + " L";
+        }
+        function resetAgua() {
+            aguaActual = 0;
+            document.getElementById('contador-agua').textContent = "0.00 L";
+        }
+
+        // Notificaciones Service Worker
+        async function lanzarAlarmaPersonalizada(titulo, mensaje) {
+            if ("vibrate" in navigator) navigator.vibrate([300, 100, 300, 100, 500]);
+            if ('serviceWorker' in navigator) {
+                const reg = await navigator.serviceWorker.ready;
+                if (reg.active) {
+                    reg.active.postMessage({ type: 'NOTIFICACION_PERSONALIZADA', titulo, mensaje });
+                } else {
+                    reg.showNotification(titulo, { body: mensaje });
+                }
+            } else if (Notification.permission === "granted") {
+                new Notification(titulo, { body: mensaje });
+            }
+        }
+
+        function activarYProbarAlarma() {
             if (!("Notification" in window)) {
-                alert("Este navegador no soporta notificaciones.");
+                alert("Tu navegador no soporta notificaciones.");
                 return;
             }
-
             Notification.requestPermission().then(permission => {
                 if (permission === "granted") {
-                    document.getElementById('estado-alarma').textContent = "¡Notificaciones y alertas activadas con éxito!";
-                    new Notification("Plan Maestro Pro", {
-                        body: "¡Notificaciones y alertas activadas con éxito!",
-                        icon: "/favicon.ico"
-                    });
-                    if ("vibrate" in navigator) {
-                        navigator.vibrate([200, 100, 200, 100, 200]);
-                    }
+                    document.getElementById('estado-alarma').textContent = "Permisos concedidos correctamente.";
+                    const elemCuenta = document.getElementById('cuenta-atras');
+                    const elemSeg = document.getElementById('segundos');
+                    elemCuenta.classList.remove('hidden');
+
+                    let seg = 5;
+                    const intervalo = setInterval(() => {
+                        seg--;
+                        elemSeg.textContent = seg;
+                        if (seg <= 0) {
+                            clearInterval(intervalo);
+                            elemCuenta.textContent = "🚀 ¡Alerta enviada al Apple Watch y pantalla de bloqueo!";
+                            lanzarAlarmaPersonalizada("🏋️ Gym Prep (15:30)", "¡Es hora de preparar la mochila e ir a entrenar!");
+                        }
+                    }, 1000);
                 } else {
-                    alert("Debes permitir las notificaciones para recibir alertas en el Apple Watch.");
+                    alert("Se requieren permisos de notificación.");
                 }
             });
+        }
+
+        function iniciarComprobadorAlertas() {
+            setInterval(() => {
+                const ahora = new Date();
+                const horaActual = `${String(ahora.getHours()).padStart(2, '0')}:${String(ahora.getMinutes()).padStart(2, '0')}`;
+                const diaHoy = ahora.getDay();
+                const rutinaHoy = rutinasSemanales[diaHoy]?.bloques || [];
+                
+                rutinaHoy.forEach(item => {
+                    if (item.hora.includes(horaActual) && ahora.getSeconds() < 10) {
+                        lanzarAlarmaPersonalizada(item.titulo, item.desc);
+                    }
+                });
+            }, 10000);
         }
     </script>
 </body>
