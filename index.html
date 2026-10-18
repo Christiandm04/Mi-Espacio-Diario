@@ -26,7 +26,7 @@
         <div class="text-brand-green text-4xl mb-2">
             <i class="fa-solid fa-bell-ring animate-bounce"></i>
         </div>
-        <h1 class="text-xl font-extrabold text-brand-green tracking-wide">PRUEBA DE ALARMA</h1>
+        <h1 class="text-xl font-extrabold text-brand-green tracking-wide">PRUEBA DE ALARMA iOS</h1>
         <p class="text-xs text-gray-300 leading-relaxed">
             Pulsa el botón, concédele permiso y **bloquea la pantalla**. En <b>5 segundos</b> recibirás la alerta personalizada.
         </p>
@@ -41,16 +41,32 @@
     </div>
 
     <script>
-        function dispararAlarmaPrueba(titulo, mensaje) {
-            if (Notification.permission === "granted") {
-                new Notification(titulo, {
-                    body: mensaje,
-                    icon: "https://cdn-icons-png.flaticon.com/512/3603/3603850.png"
-                });
-            }
+        // Registrar Service Worker dinámico en línea para soporte completo en iOS
+        if ('serviceWorker' in navigator) {
+            const swCode = `
+                self.addEventListener('install', event => self.skipWaiting());
+                self.addEventListener('activate', event => event.waitUntil(self.clients.claim()));
+            `;
+            const blob = new Blob([swCode], { type: 'application/javascript' });
+            navigator.serviceWorker.register(URL.createObjectURL(blob));
+        }
 
+        async function lanzarAlarmaConServiceWorker(titulo, mensaje) {
             if ("vibrate" in navigator) {
                 navigator.vibrate([300, 100, 300, 100, 500]);
+            }
+
+            if ('serviceWorker' in navigator) {
+                const reg = await navigator.serviceWorker.ready;
+                reg.showNotification(titulo, {
+                    body: mensaje,
+                    icon: 'https://cdn-icons-png.flaticon.com/512/3603/3603850.png',
+                    badge: 'https://cdn-icons-png.flaticon.com/512/3603/3603850.png',
+                    vibrate: [300, 100, 300, 100, 500],
+                    tag: 'alarma-prueba'
+                });
+            } else if (Notification.permission === "granted") {
+                new Notification(titulo, { body: mensaje });
             }
         }
 
@@ -74,8 +90,8 @@
                             clearInterval(intervalo);
                             elemCuenta.textContent = "🚀 ¡Notificación enviada!";
                             
-                            // TÍTULO Y TEXTO PERSONALIZADO DE LA ALARMA DE PRUEBA
-                            dispararAlarmaPrueba(
+                            // TÍTULO Y TEXTO PERSONALIZADO DE LA ALARMA
+                            lanzarAlarmaConServiceWorker(
                                 "🏋️ Gym Prep (15:30)", 
                                 "¡Es hora de preparar la bolsa e ir al gimnasio!"
                             );
