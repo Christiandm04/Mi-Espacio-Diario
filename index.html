@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Espacio Diario - Cyber Fitness</title>
+    
+    <!-- Vinculación del Manifiesto PWA para iOS y Apple Watch -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="CyberFitness">
+    
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -37,7 +44,7 @@
 </head>
 <body class="bg-brand-dark text-gray-100 min-h-screen flex flex-col">
 
-    <!-- Header / Fecha dinámica -->
+    <!-- Header / Fecha dinámica en español -->
     <header class="bg-brand-card border-b border-brand-border p-4 sticky top-0 z-50">
         <div class="max-w-md mx-auto flex justify-between items-center">
             <div>
@@ -223,7 +230,7 @@
 
             Notification.requestPermission().then(permission => {
                 if (permission === "granted") {
-                    document.getElementById('estado-alarma').textContent = " Permisos concedidos correctamente.";
+                    document.getElementById('estado-alarma').textContent = "Permisos concedidos correctamente.";
                     const elemCuenta = document.getElementById('cuenta-atras');
                     const elemSeg = document.getElementById('segundos');
                     elemCuenta.classList.remove('hidden');
