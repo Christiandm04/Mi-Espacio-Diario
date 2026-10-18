@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plan Maestro Pro - Cyber Fitness</title>
     
-    <!-- PWA Configs -->
+    <!-- PWA Configs vinculados con tu manifest.json y sw.js -->
     <link rel="manifest" href="/manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -96,7 +96,7 @@
         <section id="vista-rutina" class="space-y-6">
             <div>
                 <h2 class="text-lg font-bold tracking-tight text-white mb-1">Planificación Semanal Interactiva</h2>
-                <p class="text-xs text-gray-400">Selecciona el día para revisar tu cronograma específico de Torrelavega/Santander.</p>
+                <p class="text-xs text-gray-400">Selecciona el día para revisar tu cronograma específico.</p>
             </div>
 
             <!-- Selector de Días -->
@@ -129,7 +129,7 @@
         <section id="vista-diario" class="space-y-4 hidden">
             <div class="bg-brand-card border border-brand-border rounded-2xl p-6 neon-glow-green max-w-2xl mx-auto">
                 <h2 class="text-sm font-bold text-brand-green mb-2"><i class="fa-solid fa-book-open mr-2"></i>Diario Personal & Reflexión</h2>
-                <p class="text-xs text-gray-400 mb-4">Escribe tus notas, estado de ánimo o progresos de hoy. Se guarda automáticamente en tu dispositivo.</p>
+                <p class="text-xs text-gray-400 mb-4">Escribe tus notas, estado de ánimo o progresos de hoy.</p>
                 <textarea id="journal-input" rows="8" class="w-full bg-brand-dark border border-brand-border rounded-xl p-4 text-sm text-gray-200 focus:outline-none focus:border-brand-green transition" placeholder="Escribe aquí tus pensamientos..."></textarea>
                 <button onclick="guardarDiario()" class="mt-4 w-full bg-brand-green text-brand-dark font-bold py-3 rounded-xl text-sm transition hover:opacity-90 neon-glow-green">
                     Guardar en LocalStorage
@@ -157,7 +157,7 @@
                 <h2 class="text-sm font-bold text-brand-green"><i class="fa-solid fa-dumbbell mr-2"></i>Guía de Entrenamiento & Base</h2>
                 <div class="bg-brand-dark p-4 rounded-xl border border-brand-border text-xs space-y-2">
                     <p class="font-bold text-white">🏋️ Enfoque Corporal (1,55m / 50kg):</p>
-                    <p class="text-gray-300">Prioriza la sobrecarga progresiva en ejercicios compuestos, asegurando un consumo calórico adecuado y descanso óptimo de 8 horas.</p>
+                    <p class="text-gray-300">Prioriza la sobrecarga progresiva en ejercicios compuestos, asegurando un consumo calórico adecuado y descanso óptimo.</p>
                 </div>
             </div>
         </section>
@@ -215,52 +215,65 @@
         // Datos de Rutinas por Día de la Semana
         const rutinasSemanales = {
             1: { nombre: "LUNES — Día de Brazo & Enfoque", bloques: [
-                { hora: "07:00", titulo: "⏰ Despertar & Rutina Mañana (Alarma)", desc: "Afirmaciones, diario personal y desayuno limpio." },
-                { hora: "07:30 - 08:15", titulo: "🍳 Desayuno & Preparación", desc: "Desayuno limpio e hidratación." },
-                { hora: "08:15", titulo: "🎓 Salida para Clase (Alarma)", desc: "Trayecto a las clases de Administrativo en Torrelavega." },
-                { hora: "08:30 - 14:30", titulo: "📚 Clases de Administrativo", desc: "Enfoque en estudio, postura e higiene postural." },
-                { hora: "14:30 - 15:15", titulo: "🚶 Salida & Trayecto a Casa", desc: "15-20 min de trayecto y comida limpia." },
+                { hora: "07:00", titulo: "⏰ Despertar & Activación (Alarma)", desc: "Afirmaciones, diario personal y desayuno limpio." },
+                { hora: "08:15", titulo: "🎓 Salir de Casa para Clase (Alarma)", desc: "Trayecto a las clases en Torrelavega." },
+                { hora: "08:30 - 14:20", titulo: "📚 Clases de Administrativo", desc: "Enfoque en estudio y postura." },
+                { hora: "14:20 - 15:15", titulo: "🚶 Salida & Trayecto a Casa", desc: "15-20 min de trayecto y comida limpia." },
                 { hora: "15:30", titulo: "🏋️ Preparación Gym (Alarma)", desc: "Preparar equipamiento para el entrenamiento." },
-                { hora: "16:00 - 17:30", titulo: "💪 Gimnasio: Brazo & Abdomen", desc: "Fuerza de hombros, bíceps, tríceps y abdominales." },
-                { hora: "17:30 - 17:50", titulo: "🚶 Salida del Gym & Trayecto a Casa", desc: "15-20 minutos de vuelta caminando." },
-                { hora: "17:50 - 18:15", titulo: "🚿 Ducha Reparadora & Cambio", desc: "Higiene y relajación muscular." },
-                { hora: "18:15", titulo: "📚 Bloque de Estudio / Lectura (Alarma 18:15)", desc: "Repaso de clase o lectura de desarrollo personal." },
-                { hora: "19:00 - 19:30", titulo: "🌿 Tiempo de Descanso", desc: "Relajación y desconexión breve." },
-                { hora: "18:30 - 20:00", titulo: "🎮 Caminata / Meditación O Jugar a Videojuegos", desc: "Paseo al aire libre, salud mental o gaming libre." }
+                { hora: "16:00 - 17:30", titulo: "💪 Gimnasio: Brazo & Abdomen", desc: "Fuerza y musculación." },
+                { hora: "17:30 - 18:15", titulo: "🚿 Ducha Reparadora & Cambio", desc: "Higiene y relajación muscular." },
+                { hora: "18:15 - 19:00", titulo: "📚 Bloque de Estudio (Alarma 18:15)", desc: "Repaso de clase o lectura de desarrollo personal." },
+                { hora: "19:30 - 20:00", titulo: "🎮 Jugar a Videojuegos / Ocio", desc: "Gaming libre y desconexión." },
+                { hora: "20:00 - 22:00", titulo: "🍽️ Cenar y Estar con el Móvil", desc: "Cena limpia y tiempo libre digital." },
+                { hora: "22:00", titulo: "🌙 Hora de Dormir (Alarma 22:00)", desc: "Apagar pantallas y descansar." }
             ]},
             2: { nombre: "MARTES — Turno de Tarde & Gym", bloques: [
-                { hora: "07:00", titulo: "⏰ Despertar & Activación", desc: "Inicio de jornada." },
-                { hora: "16:00", titulo: "🏋️ Gym (Turno Martes)", desc: "Entrenamiento desplazado (16:00 - 17:30)." },
-                { hora: "18:15", titulo: "📚 Bloque de Estudio", desc: "Concentración y repaso." },
-                { hora: "22:00", titulo: "🌙 Hora de Dormir", desc: "Descanso reparador." }
+                { hora: "07:00", titulo: "⏰ Despertar & Activación (Alarma)", desc: "Inicio de jornada." },
+                { hora: "08:15", titulo: "🎓 Salir de Casa", desc: "Preparación matutina." },
+                { hora: "16:00", titulo: "🏋️ Gym (Turno Martes)", desc: "Entrenamiento desplazado." },
+                { hora: "18:15 - 19:00", titulo: "📚 Bloque de Estudio (Alarma 18:15)", desc: "Concentración y repaso." },
+                { hora: "19:30 - 20:00", titulo: "🎮 Jugar a Videojuegos / Ocio", desc: "Ocio digital." },
+                { hora: "20:00 - 22:00", titulo: "🍽️ Cenar y Estar con el Móvil", desc: "Cena y relax." },
+                { hora: "22:00", titulo: "🌙 Hora de Dormir (Alarma 22:00)", desc: "Descanso reparador." }
             ]},
-            3: { nombre: "MIÉRCOLES — Día de Descanso / Ocio", bloques: [
-                { hora: "07:00", titulo: "⏰ Despertar & Activación", desc: "Inicio de jornada." },
-                { hora: "15:30", titulo: "🏋️ Gym Prep", desc: "Preparar bolsa." },
-                { hora: "18:30", titulo: "🌿 Ocio & Meditación", desc: "Paseo o gaming libre sin estudio." },
-                { hora: "22:00", titulo: "🌙 Hora de Dormir", desc: "Descanso reparador." }
+            3: { nombre: "MIÉRCOLES — Estudio Especial & Sin Gym", bloques: [
+                { hora: "07:00", titulo: "⏰ Despertar & Activación (Alarma)", desc: "Inicio de jornada." },
+                { hora: "08:15", titulo: "🎓 Salir de Casa", desc: "Trayecto habitual." },
+                { hora: "17:00 - 18:30", titulo: "📚 Bloque de Estudio (Sin Alarma)", desc: "Sesión de estudio de tarde (Sin Gym)." },
+                { hora: "19:30 - 20:00", titulo: "🎮 Jugar a Videojuegos / Ocio", desc: "Ocio libre sin estudio." },
+                { hora: "20:00 - 22:00", titulo: "🍽️ Cenar y Estar con el Móvil", desc: "Cena y relax." },
+                { hora: "22:00", titulo: "🌙 Hora de Dormir (Alarma 22:00)", desc: "Descanso reparador." }
             ]},
-            4: { nombre: "JUEVES — Rutina Estándar", bloques: [
-                { hora: "07:00", titulo: "⏰ Despertar & Activación", desc: "Inicio de jornada." },
-                { hora: "15:30", titulo: "🏋️ Gym Prep", desc: "Preparar bolsa de entrenamiento." },
-                { hora: "18:15", titulo: "📚 Bloque de Estudio", desc: "Concentración diaria." },
-                { hora: "22:00", titulo: "🌙 Hora de Dormir", desc: "Descanso reparador." }
+            4: { nombre: "JUEVES — Entrenamiento Alternativo & Sin Gym", bloques: [
+                { hora: "07:00", titulo: "⏰ Despertar & Activación (Alarma)", desc: "Inicio de jornada." },
+                { hora: "08:15", titulo: "🎓 Salir de Casa para Clase (Alarma)", desc: "Trayecto a clase." },
+                { hora: "16:30 - 18:00", titulo: "🏃 Entrenamiento Específico", desc: "Actividad física alternativa (Sin Gym tradicional)." },
+                { hora: "19:30 - 20:00", titulo: "🎮 Jugar a Videojuegos / Ocio", desc: "Gaming libre." },
+                { hora: "20:00 - 22:00", titulo: "🍽️ Cenar y Estar con el Móvil", desc: "Cena y relax." },
+                { hora: "22:00", titulo: "🌙 Hora de Dormir (Alarma 22:00)", desc: "Descanso reparador." }
             ]},
             5: { nombre: "VIERNES — Cierre de Semana", bloques: [
-                { hora: "07:00", titulo: "⏰ Despertar & Activación", desc: "Inicio de jornada." },
-                { hora: "15:30", titulo: "🏋️ Gym Prep", desc: "Entrenamiento de cierre de semana." },
-                { hora: "18:15", titulo: "📚 Bloque de Estudio", desc: "Repaso final." },
-                { hora: "22:00", titulo: "🌙 Hora de Dormir", desc: "Descanso reparador." }
+                { hora: "07:00", titulo: "⏰ Despertar & Activación (Alarma)", desc: "Inicio de jornada." },
+                { hora: "08:15", titulo: "🎓 Salir de Casa para Clase (Alarma)", desc: "Trayecto a clase." },
+                { hora: "15:30", titulo: "🏋️ Gym Prep (Alarma)", desc: "Entrenamiento de cierre de semana." },
+                { hora: "18:15 - 19:00", titulo: "📚 Bloque de Estudio (Alarma 18:15)", desc: "Repaso final." },
+                { hora: "19:30 - 20:00", titulo: "🎮 Jugar a Videojuegos / Ocio", desc: "Gaming libre." },
+                { hora: "20:00 - 22:00", titulo: "🍽️ Cenar y Estar con el Móvil", desc: "Cena y relax." },
+                { hora: "22:00", titulo: "🌙 Hora de Dormir (Alarma 22:00)", desc: "Descanso reparador." }
             ]},
             6: { nombre: "SÁBADO — Fin de Semana & Gym", bloques: [
                 { hora: "09:00", titulo: "⏰ Despertar Flexible", desc: "Descanso y activación matutina." },
-                { hora: "10:00", titulo: "🏋️ Bloque de Gym (Fin de semana)", desc: "Entrenamiento matutino (10:00 - 12:00)." },
-                { hora: "22:00", titulo: "🌙 Hora de Dormir", desc: "Descanso reparador." }
+                { hora: "10:00", titulo: "🏋️ Bloque de Gym (Fin de semana)", desc: "Entrenamiento matutino." },
+                { hora: "19:30 - 20:00", titulo: "🎮 Jugar a Videojuegos / Ocio", desc: "Gaming libre." },
+                { hora: "20:00 - 22:00", titulo: "🍽️ Cenar y Estar con el Móvil", desc: "Cena y relax." },
+                { hora: "22:00", titulo: "🌙 Hora de Dormir (Alarma 22:00)", desc: "Descanso reparador." }
             ]},
             0: { nombre: "DOMINGO — Descanso & Preparación", bloques: [
                 { hora: "09:30", titulo: "⏰ Despertar & Reflexión", desc: "Planificación de la nueva semana." },
                 { hora: "10:00", titulo: "🏋️ Bloque de Gym (Fin de semana)", desc: "Entrenamiento matutino." },
-                { hora: "22:00", titulo: "🌙 Hora de Dormir", desc: "Descanso reparador." }
+                { hora: "19:30 - 20:00", titulo: "🎮 Jugar a Videojuegos / Ocio", desc: "Gaming libre." },
+                { hora: "20:00 - 22:00", titulo: "🍽️ Cenar y Estar con el Móvil", desc: "Cena y relax." },
+                { hora: "22:00", titulo: "🌙 Hora de Dormir (Alarma 22:00)", desc: "Descanso reparador." }
             ]}
         };
 
@@ -365,7 +378,8 @@
                 const rutinaHoy = rutinasSemanales[diaHoy]?.bloques || [];
                 
                 rutinaHoy.forEach(item => {
-                    if (item.hora.includes(horaActual) && ahora.getSeconds() < 10) {
+                    // Solo salta si el bloque tiene la etiqueta "(Alarma)"
+                    if (item.titulo.includes("Alarma") && item.hora.includes(horaActual) && ahora.getSeconds() < 10) {
                         lanzarAlarmaPersonalizada(item.titulo, item.desc);
                     }
                 });
