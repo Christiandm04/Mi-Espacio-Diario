@@ -210,8 +210,8 @@
             ]},
             2: { nombre: "MARTES — Turno de Tarde & Gym", bloques: [
                 { hora: "07:00", titulo: "⏰ Despertar & Activación (Alarma)", desc: "Inicio de jornada." },
-                { hora: "08:15", titulo: "🎓 Salir de Casa", desc: "Preparación matutina." },
-                { hora: "16:00", titulo: "🏋️ Gym (Turno Martes)", desc: "Entrenamiento desplazado." },
+                { hora: "08:15", titulo: "🎓 Salir de Casa (Alarma)", desc: "Preparación matutina." },
+                { hora: "16:00", titulo: "🏋️ Gym (Turno Martes) (Alarma 16:00)", desc: "Entrenamiento desplazado." },
                 { hora: "18:15 - 19:00", titulo: "📚 Bloque de Estudio (Alarma 18:15)", desc: "Concentración y repaso." },
                 { hora: "19:30 - 20:00", titulo: "🎮 Jugar a Videojuegos / Ocio", desc: "Ocio digital." },
                 { hora: "20:00 - 22:00", titulo: "🍽️ Cenar y Estar con el Móvil", desc: "Cena y relax." },
@@ -219,7 +219,7 @@
             ]},
             3: { nombre: "MIÉRCOLES — Estudio Especial & Sin Gym", bloques: [
                 { hora: "07:00", titulo: "⏰ Despertar & Activación (Alarma)", desc: "Inicio de jornada." },
-                { hora: "08:15", titulo: "🎓 Salir de Casa", desc: "Trayecto habitual." },
+                { hora: "08:15", titulo: "🎓 Salir de Casa (Alarma)", desc: "Trayecto habitual." },
                 { hora: "17:00 - 18:30", titulo: "📚 Bloque de Estudio (Sin Alarma)", desc: "Sesión de estudio de tarde (Sin Gym)." },
                 { hora: "19:30 - 20:00", titulo: "🎮 Jugar a Videojuegos / Ocio", desc: "Ocio libre sin estudio." },
                 { hora: "20:00 - 22:00", titulo: "🍽️ Cenar y Estar con el Móvil", desc: "Cena y relax." },
@@ -347,7 +347,7 @@
             }
         }
 
-        // Botón de prueba que coge dinámicamente el primer evento con alarma del día de hoy
+        // Botón de prueba
         function activarYProbarAlarma() {
             if (!("Notification" in window)) {
                 alert("Tu navegador no soporta notificaciones.");
@@ -368,7 +368,6 @@
                             clearInterval(intervalo);
                             elemCuenta.textContent = "🚀 ¡Alerta enviada al Apple Watch y pantalla de bloqueo!";
                             
-                            // Buscar una alarma válida del día de hoy para la prueba
                             const bloquesHoy = rutinasSemanales[diaActualReal].bloques;
                             const bloqueConAlarma = bloquesHoy.find(b => b.titulo.includes("Alarma")) || bloquesHoy[0];
                             
@@ -381,17 +380,31 @@
             });
         }
 
-        // Verificación automática en segundo plano
+        // Variable Anti-Spam
+        let ultimaNotificacionLanzada = "";
+
+        // Verificación en segundo plano Anti-Spam corregida
         function iniciarComprobadorAlertas() {
             setInterval(() => {
                 const ahora = new Date();
-                const horaActual = `${String(ahora.getHours()).padStart(2, '0')}:${String(ahora.getMinutes()).padStart(2, '0')}`;
+                const horas = String(ahora.getHours()).padStart(2, '0');
+                const minutos = String(ahora.getMinutes()).padStart(2, '0');
+                const horaExactaActual = `${horas}:${minutos}`;
+                
                 diaActualReal = ahora.getDay();
                 const rutinaHoy = rutinasSemanales[diaActualReal]?.bloques || [];
                 
                 rutinaHoy.forEach(item => {
-                    if (item.titulo.includes("Alarma") && item.hora.includes(horaActual) && ahora.getSeconds() < 10) {
-                        lanzarAlarmaPersonalizada(item.titulo, item.desc);
+                    // Extraer solo la primera hora en punto del bloque (por ejemplo de '18:15 - 19:00' extrae '18:15')
+                    const horaInicioBloque = item.hora.split(' ')[0].trim();
+
+                    // Solo dispara si lleva la etiqueta '(Alarma)' y la hora de inicio coincide exactamente
+                    if (item.titulo.includes("Alarma") && horaInicioBloque === horaExactaActual) {
+                        const claveUnica = `${horaExactaActual}-${item.titulo}`;
+                        if (ultimaNotificacionLanzada !== claveUnica && ahora.getSeconds() < 15) {
+                            lanzarAlarmaPersonalizada(item.titulo, item.desc);
+                            ultimaNotificacionLanzada = claveUnica; // Evita repeticiones en el mismo minuto
+                        }
                     }
                 });
             }, 10000);
