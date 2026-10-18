@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plan Maestro Pro - Cyber Fitness</title>
     
-    <!-- PWA Configs vinculados con tu manifest.json y sw.js -->
+    <!-- PWA Configs -->
     <link rel="manifest" href="/manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -58,11 +58,11 @@
             
             <div class="flex items-center gap-4">
                 <div class="bg-brand-dark border border-brand-border px-4 py-1.5 rounded-xl text-xs font-mono text-brand-cyan flex items-center gap-2">
-                    <span id="reloj-digital" class="font-bold">12:41:09</span>
-                    <span class="text-[10px] text-gray-400 border-l border-brand-border pl-2" id="fecha-corta">Domingo, 18 De Octubre De 2026</span>
+                    <span id="reloj-digital" class="font-bold">--:--:--</span>
+                    <span class="text-[10px] text-gray-400 border-l border-brand-border pl-2" id="fecha-corta">Cargando fecha...</span>
                 </div>
                 <button onclick="activarYProbarAlarma()" class="bg-brand-green/10 border border-brand-green/30 text-brand-green px-3 py-1.5 rounded-xl text-xs font-bold hover:bg-brand-green/20 transition flex items-center gap-1.5">
-                    <i class="fa-solid fa-bell text-[10px]"></i> Alarmas Sync
+                    <i class="fa-solid fa-bell text-[10px]"></i> Probar Alarma (5s)
                 </button>
             </div>
         </div>
@@ -96,12 +96,12 @@
         <section id="vista-rutina" class="space-y-6">
             <div>
                 <h2 class="text-lg font-bold tracking-tight text-white mb-1">Planificación Semanal Interactiva</h2>
-                <p class="text-xs text-gray-400">Selecciona el día para revisar tu cronograma específico.</p>
+                <p class="text-xs text-gray-400">Visualizando automáticamente el día de hoy. Puedes pulsar cualquier otro día para consultarlo.</p>
             </div>
 
             <!-- Selector de Días -->
             <div class="flex gap-2 overflow-x-auto pb-2">
-                <button onclick="seleccionarDia(1)" id="btn-dia-1" class="px-4 py-2 rounded-xl text-xs font-bold transition border border-brand-border bg-brand-border text-white">LUN</button>
+                <button onclick="seleccionarDia(1)" id="btn-dia-1" class="px-4 py-2 rounded-xl text-xs font-bold transition border border-brand-border bg-brand-card text-gray-400 hover:text-white">LUN</button>
                 <button onclick="seleccionarDia(2)" id="btn-dia-2" class="px-4 py-2 rounded-xl text-xs font-bold transition border border-brand-border bg-brand-card text-gray-400 hover:text-white">MAR</button>
                 <button onclick="seleccionarDia(3)" id="btn-dia-3" class="px-4 py-2 rounded-xl text-xs font-bold transition border border-brand-border bg-brand-card text-gray-400 hover:text-white">MIÉ</button>
                 <button onclick="seleccionarDia(4)" id="btn-dia-4" class="px-4 py-2 rounded-xl text-xs font-bold transition border border-brand-border bg-brand-card text-gray-400 hover:text-white">JUE</button>
@@ -113,7 +113,7 @@
             <!-- Panel de Bloques del Día -->
             <div class="bg-brand-card border border-brand-border rounded-2xl p-6 neon-glow-cyan">
                 <div class="flex justify-between items-center mb-6 pb-4 border-b border-brand-border">
-                    <h3 id="titulo-dia-activo" class="text-sm font-extrabold text-brand-cyan tracking-wide uppercase">LUNES — Día de Brazo & Enfoque</h3>
+                    <h3 id="titulo-dia-activo" class="text-sm font-extrabold text-brand-cyan tracking-wide uppercase">Cargando...</h3>
                     <div class="text-xs text-gray-400 bg-brand-dark px-3 py-1 rounded-lg border border-brand-border">
                         <i class="fa-regular fa-clock mr-1"></i> Horario de 24 horas
                     </div>
@@ -169,7 +169,7 @@
                 <p class="text-xs text-gray-400">Activa las notificaciones para recibir alertas automáticas con el nombre de cada actividad directamente en tu muñeca.</p>
                 
                 <button onclick="activarYProbarAlarma()" class="w-full bg-brand-cyan text-brand-dark font-bold py-3.5 rounded-xl text-sm transition hover:opacity-90 neon-glow-cyan">
-                    ⚡ ACTIVAR Y PROBAR ALARMA (5s)
+                    ⚡ PROBAR ALARMA ACTUAL (5s)
                 </button>
 
                 <div id="cuenta-atras" class="text-xs font-mono text-brand-cyan hidden">
@@ -188,31 +188,12 @@
 
     <!-- SCRIPT DE LÓGICA -->
     <script>
-        // Service Worker Registration
+        // Registrar Service Worker
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/sw.js');
         }
 
-        // Reloj en tiempo real
-        setInterval(() => {
-            const now = new Date();
-            document.getElementById('reloj-digital').textContent = now.toTimeString().split(' ')[0];
-            const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            document.getElementById('fecha-corta').textContent = now.toLocaleDateString('es-ES', opciones);
-        }, 1000);
-
-        // Control de Pestañas
-        function cambiarTab(tab) {
-            const vistas = ['rutina', 'diario', 'habitos', 'gym', 'alarmas'];
-            vistas.forEach(v => {
-                document.getElementById(`vista-${v}`).classList.add('hidden');
-                document.getElementById(`tab-btn-${v}`).className = "px-4 py-2 rounded-xl text-gray-400 hover:text-white hover:bg-brand-border transition flex items-center gap-2";
-            });
-            document.getElementById(`vista-${tab}`).classList.remove('hidden');
-            document.getElementById(`tab-btn-${tab}`).className = "px-4 py-2 rounded-xl bg-brand-green text-brand-dark font-bold transition flex items-center gap-2";
-        }
-
-        // Datos de Rutinas por Día de la Semana
+        // Datos completos de rutinas y bloques semanales con tus reglas exactas
         const rutinasSemanales = {
             1: { nombre: "LUNES — Día de Brazo & Enfoque", bloques: [
                 { hora: "07:00", titulo: "⏰ Despertar & Activación (Alarma)", desc: "Afirmaciones, diario personal y desayuno limpio." },
@@ -263,19 +244,40 @@
             ]},
             6: { nombre: "SÁBADO — Fin de Semana & Gym", bloques: [
                 { hora: "09:00", titulo: "⏰ Despertar Flexible", desc: "Descanso y activación matutina." },
-                { hora: "10:00", titulo: "🏋️ Bloque de Gym (Fin de semana)", desc: "Entrenamiento matutino." },
+                { hora: "10:00 - 12:00", titulo: "🏋️ Bloque de Gym (Fin de semana) (Alarma 10:00)", desc: "Entrenamiento matutino (10:00 a 12:00)." },
                 { hora: "19:30 - 20:00", titulo: "🎮 Jugar a Videojuegos / Ocio", desc: "Gaming libre." },
                 { hora: "20:00 - 22:00", titulo: "🍽️ Cenar y Estar con el Móvil", desc: "Cena y relax." },
                 { hora: "22:00", titulo: "🌙 Hora de Dormir (Alarma 22:00)", desc: "Descanso reparador." }
             ]},
             0: { nombre: "DOMINGO — Descanso & Preparación", bloques: [
                 { hora: "09:30", titulo: "⏰ Despertar & Reflexión", desc: "Planificación de la nueva semana." },
-                { hora: "10:00", titulo: "🏋️ Bloque de Gym (Fin de semana)", desc: "Entrenamiento matutino." },
+                { hora: "10:00 - 12:00", titulo: "🏋️ Bloque de Gym (Fin de semana) (Alarma 10:00)", desc: "Entrenamiento matutino (10:00 a 12:00)." },
                 { hora: "19:30 - 20:00", titulo: "🎮 Jugar a Videojuegos / Ocio", desc: "Gaming libre." },
                 { hora: "20:00 - 22:00", titulo: "🍽️ Cenar y Estar con el Móvil", desc: "Cena y relax." },
                 { hora: "22:00", titulo: "🌙 Hora de Dormir (Alarma 22:00)", desc: "Descanso reparador." }
             ]}
         };
+
+        // Reloj en tiempo real y detección automática del día actual
+        let diaActualReal = new Date().getDay();
+
+        setInterval(() => {
+            const now = new Date();
+            document.getElementById('reloj-digital').textContent = now.toTimeString().split(' ')[0];
+            const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('fecha-corta').textContent = now.toLocaleDateString('es-ES', opciones);
+        }, 1000);
+
+        // Control de Pestañas
+        function cambiarTab(tab) {
+            const vistas = ['rutina', 'diario', 'habitos', 'gym', 'alarmas'];
+            vistas.forEach(v => {
+                document.getElementById(`vista-${v}`).classList.add('hidden');
+                document.getElementById(`tab-btn-${v}`).className = "px-4 py-2 rounded-xl text-gray-400 hover:text-white hover:bg-brand-border transition flex items-center gap-2";
+            });
+            document.getElementById(`vista-${tab}`).classList.remove('hidden');
+            document.getElementById(`tab-btn-${tab}`).className = "px-4 py-2 rounded-xl bg-brand-green text-brand-dark font-bold transition flex items-center gap-2";
+        }
 
         function seleccionarDia(dia) {
             for(let i=0; i<=6; i++) {
@@ -300,8 +302,15 @@
             `).join('');
         }
 
-        // Inicializar Lunes por defecto
-        seleccionarDia(1);
+        // Inicializar seleccionando automáticamente el día real de hoy al cargar la app
+        window.onload = function() {
+            const guardado = localStorage.getItem('cyber_fitness_journal');
+            if(guardado) document.getElementById('journal-input').value = guardado;
+            
+            diaActualReal = new Date().getDay();
+            seleccionarDia(diaActualReal);
+            iniciarComprobadorAlertas();
+        };
 
         // Diario LocalStorage
         function guardarDiario() {
@@ -309,12 +318,6 @@
             localStorage.setItem('cyber_fitness_journal', texto);
             alert('¡Entrada guardada con éxito en el dispositivo!');
         }
-
-        window.onload = function() {
-            const guardado = localStorage.getItem('cyber_fitness_journal');
-            if(guardado) document.getElementById('journal-input').value = guardado;
-            iniciarComprobadorAlertas();
-        };
 
         // Hidratación
         let aguaActual = 1.5;
@@ -342,6 +345,7 @@
             }
         }
 
+        // Botón de prueba que coge dinámicamente el primer evento con alarma del día de hoy
         function activarYProbarAlarma() {
             if (!("Notification" in window)) {
                 alert("Tu navegador no soporta notificaciones.");
@@ -361,7 +365,12 @@
                         if (seg <= 0) {
                             clearInterval(intervalo);
                             elemCuenta.textContent = "🚀 ¡Alerta enviada al Apple Watch y pantalla de bloqueo!";
-                            lanzarAlarmaPersonalizada("🏋️ Gym Prep (15:30)", "¡Es hora de preparar la mochila e ir a entrenar!");
+                            
+                            // Buscar una alarma válida del día de hoy para la prueba
+                            const bloquesHoy = rutinasSemanales[diaActualReal].bloques;
+                            const bloqueConAlarma = bloquesHoy.find(b => b.titulo.includes("Alarma")) || bloquesHoy[0];
+                            
+                            lanzarAlarmaPersonalizada(bloqueConAlarma.titulo, bloqueConAlarma.desc);
                         }
                     }, 1000);
                 } else {
@@ -370,15 +379,15 @@
             });
         }
 
+        // Verificación automática en segundo plano
         function iniciarComprobadorAlertas() {
             setInterval(() => {
                 const ahora = new Date();
                 const horaActual = `${String(ahora.getHours()).padStart(2, '0')}:${String(ahora.getMinutes()).padStart(2, '0')}`;
-                const diaHoy = ahora.getDay();
-                const rutinaHoy = rutinasSemanales[diaHoy]?.bloques || [];
+                diaActualReal = ahora.getDay();
+                const rutinaHoy = rutinasSemanales[diaActualReal]?.bloques || [];
                 
                 rutinaHoy.forEach(item => {
-                    // Solo salta si el bloque tiene la etiqueta "(Alarma)"
                     if (item.titulo.includes("Alarma") && item.hora.includes(horaActual) && ahora.getSeconds() < 10) {
                         lanzarAlarmaPersonalizada(item.titulo, item.desc);
                     }
