@@ -169,7 +169,7 @@
                 <p class="text-xs text-gray-400">Activa las notificaciones para recibir alertas automáticas con el nombre de cada actividad directamente en tu muñeca.</p>
                 
                 <button onclick="activarYProbarAlarma()" class="w-full bg-brand-cyan text-brand-dark font-bold py-3.5 rounded-xl text-sm transition hover:opacity-90 neon-glow-cyan">
-                    ⚡ PROBAR ALARMA ACTUAL (5s)
+                    ⚡ PROBAR ALARMA DE PRUEBA (5s)
                 </button>
 
                 <div id="cuenta-atras" class="text-xs font-mono text-brand-cyan hidden">
@@ -193,7 +193,7 @@
             navigator.serviceWorker.register('/sw.js');
         }
 
-        // Datos completos de rutinas y bloques semanales con tus reglas exactas
+        // Datos completos de rutinas y bloques semanales
         const rutinasSemanales = {
             1: { nombre: "LUNES — Día de Brazo & Enfoque", bloques: [
                 { hora: "07:00", titulo: "⏰ Despertar & Activación (Alarma)", desc: "Afirmaciones, diario personal y desayuno limpio." },
@@ -347,7 +347,7 @@
             }
         }
 
-        // Botón de prueba
+        // Botón de prueba (Usa un evento neutro de prueba para no confundir alarmas del día)
         function activarYProbarAlarma() {
             if (!("Notification" in window)) {
                 alert("Tu navegador no soporta notificaciones.");
@@ -367,11 +367,7 @@
                         if (seg <= 0) {
                             clearInterval(intervalo);
                             elemCuenta.textContent = "🚀 ¡Alerta enviada al Apple Watch y pantalla de bloqueo!";
-                            
-                            const bloquesHoy = rutinasSemanales[diaActualReal].bloques;
-                            const bloqueConAlarma = bloquesHoy.find(b => b.titulo.includes("Alarma")) || bloquesHoy[0];
-                            
-                            lanzarAlarmaPersonalizada(bloqueConAlarma.titulo, bloqueConAlarma.desc);
+                            lanzarAlarmaPersonalizada("🔔 Alarma de Prueba Sync", "¡Sincronización con iPhone y Apple Watch verificada correctamente!");
                         }
                     }, 1000);
                 } else {
@@ -383,7 +379,7 @@
         // Variable Anti-Spam
         let ultimaNotificacionLanzada = "";
 
-        // Verificación en segundo plano Anti-Spam corregida
+        // Verificación en segundo plano Anti-Spam
         function iniciarComprobadorAlertas() {
             setInterval(() => {
                 const ahora = new Date();
@@ -395,15 +391,15 @@
                 const rutinaHoy = rutinasSemanales[diaActualReal]?.bloques || [];
                 
                 rutinaHoy.forEach(item => {
-                    // Extraer solo la primera hora en punto del bloque (por ejemplo de '18:15 - 19:00' extrae '18:15')
+                    // Extraer solo la primera hora exacta del bloque (ej: de '09:00' o '18:15 - 19:00' extrae '18:15')
                     const horaInicioBloque = item.hora.split(' ')[0].trim();
 
-                    // Solo dispara si lleva la etiqueta '(Alarma)' y la hora de inicio coincide exactamente
+                    // Solo dispara si lleva la etiqueta '(Alarma)' y coincide EXACTAMENTE con la hora actual
                     if (item.titulo.includes("Alarma") && horaInicioBloque === horaExactaActual) {
                         const claveUnica = `${horaExactaActual}-${item.titulo}`;
                         if (ultimaNotificacionLanzada !== claveUnica && ahora.getSeconds() < 15) {
                             lanzarAlarmaPersonalizada(item.titulo, item.desc);
-                            ultimaNotificacionLanzada = claveUnica; // Evita repeticiones en el mismo minuto
+                            ultimaNotificacionLanzada = claveUnica; // Garantiza sonar 1 sola vez por minuto
                         }
                     }
                 });
