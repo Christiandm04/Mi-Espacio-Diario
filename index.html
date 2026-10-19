@@ -242,19 +242,21 @@
                 { hora: "20:00 - 22:00", titulo: "🍽️ Cenar y Estar con el Móvil", desc: "Cena y relax." },
                 { hora: "22:00", titulo: "🌙 Hora de Dormir (Alarma 22:00)", desc: "Descanso reparador." }
             ]},
-            6: { nombre: "SÁBADO — Fin de Semana, Gym, Racing & Abuelos", bloques: [
+            6: { nombre: "SÁBADO — Fin de Semana, Gym, Ordenador, Racing & Abuelos", bloques: [
                 { hora: "09:00", titulo: "⏰ Despertar & Desayunar (Alarma)", desc: "Despertar y desayuno de fin de semana." },
                 { hora: "09:35", titulo: "🚶 Camino al Gimnasio (Alarma)", desc: "Prepararse y salir hacia el gym." },
                 { hora: "10:00 - 12:00", titulo: "🏋️ Bloque de Gym (Fin de semana)", desc: "Entrenamiento matutino (10:00 a 12:00)." },
-                { hora: "Tarde", titulo: "⚽ Partido del Racing / 👵 Visita a los Abuelos", desc: "Sábado: Si juega el Racing vas al partido; si no, vas a ver a tus abuelos." },
+                { hora: "16:00 - 18:30", titulo: "💻 Uso de Ordenador / Gaming / Ocio (Alarma 16:00)", desc: "Bloque dedicado al ordenador y proyectos personales." },
+                { hora: "18:30 en adelante", titulo: "⚽ Partido del Racing / 👵 Visita a los Abuelos", desc: "Sábado: Si juega el Racing vas al partido; si no, vas a ver a tus abuelos." },
                 { hora: "20:00 - 22:00", titulo: "🍽️ Cenar y Estar con el Móvil", desc: "Cena y relax." },
                 { hora: "22:00", titulo: "🌙 Hora de Dormir (Alarma 22:00)", desc: "Descanso reparador." }
             ]},
-            0: { nombre: "DOMINGO — Fin de Semana, Gym, Racing & Abuelos", bloques: [
+            0: { nombre: "DOMINGO — Fin de Semana, Gym, Ordenador, Racing & Abuelos", bloques: [
                 { hora: "09:00", titulo: "⏰ Despertar & Desayunar (Alarma)", desc: "Despertar y desayuno de fin de semana." },
                 { hora: "09:35", titulo: "🚶 Camino al Gimnasio (Alarma)", desc: "Prepararse y salir hacia el gym." },
                 { hora: "10:00 - 12:00", titulo: "🏋️ Bloque de Gym (Fin de semana)", desc: "Entrenamiento matutino (10:00 a 12:00)." },
-                { hora: "Tarde", titulo: "👵 Visita a los Abuelos / ⚽ Partido del Racing", desc: "Domingo: Si juega el Racing vas al partido; si no, vas a ver a tus abuelos." },
+                { hora: "16:00 - 18:30", titulo: "💻 Uso de Ordenador / Gaming / Ocio (Alarma 16:00)", desc: "Bloque dedicado al ordenador y proyectos personales." },
+                { hora: "18:30 en adelante", titulo: "👵 Visita a los Abuelos / ⚽ Partido del Racing", desc: "Domingo: Si juega el Racing vas al partido; si no, vas a ver a tus abuelos." },
                 { hora: "20:00 - 22:00", titulo: "🍽️ Cenar y Estar con el Móvil", desc: "Cena y relax." },
                 { hora: "22:00", titulo: "🌙 Hora de Dormir (Alarma 22:00)", desc: "Descanso reparador." }
             ]}
@@ -347,7 +349,7 @@
             }
         }
 
-        // Botón de prueba (Usa un evento neutro de prueba para no confundir alarmas del día)
+        // Botón de prueba
         function activarYProbarAlarma() {
             if (!("Notification" in window)) {
                 alert("Tu navegador no soporta notificaciones.");
@@ -391,15 +393,13 @@
                 const rutinaHoy = rutinasSemanales[diaActualReal]?.bloques || [];
                 
                 rutinaHoy.forEach(item => {
-                    // Extraer solo la primera hora exacta del bloque (ej: de '09:00' o '18:15 - 19:00' extrae '18:15')
                     const horaInicioBloque = item.hora.split(' ')[0].trim();
 
-                    // Solo dispara si lleva la etiqueta '(Alarma)' y coincide EXACTAMENTE con la hora actual
                     if (item.titulo.includes("Alarma") && horaInicioBloque === horaExactaActual) {
                         const claveUnica = `${horaExactaActual}-${item.titulo}`;
                         if (ultimaNotificacionLanzada !== claveUnica && ahora.getSeconds() < 15) {
                             lanzarAlarmaPersonalizada(item.titulo, item.desc);
-                            ultimaNotificacionLanzada = claveUnica; // Garantiza sonar 1 sola vez por minuto
+                            ultimaNotificacionLanzada = claveUnica;
                         }
                     }
                 });
